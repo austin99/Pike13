@@ -23,4 +23,5 @@ Bounced Emails | sends a daily email for clients who've registered with an inval
 
 I haven't made all this code available just yet, message me if there's something I've listed but haven't published so far.
 
-[Contact me](mailto:pike13automation@gmail.com) with any suggestions, improvements or if you would like something automated in relation to Pike13.
+[Contact me](mailto:pike13automation@gmail.com) with any suggestions, improvements or if you would like something automated in relation to Pike13
+pike13automation@gmail.com
