@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pike13Zoom", "Pike13Zoom.csproj", "{A25B4111-53BC-4BB1-B177-8818637F98EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A25B4111-53BC-4BB1-B177-8818637F98EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A25B4111-53BC-4BB1-B177-8818637F98EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A25B4111-53BC-4BB1-B177-8818637F98EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A25B4111-53BC-4BB1-B177-8818637F98EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {206C4719-4807-4C0C-919A-5C3E2FE23F98}
+	EndGlobalSection
+EndGlobal
