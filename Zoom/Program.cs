@@ -651,8 +651,8 @@ namespace Pike13Zoom
 
                     // skip "in studio" classes
                     if (eventOccurance.name.ToString().ToLower().Contains("in studio")
-                        || eventOccurance.name.ToString().ToLower().Contains("in-studio")
-                        || eventOccurance.name.ToString().ToLower().Contains("barre"))
+                        || eventOccurance.name.ToString().ToLower().Contains("in-studio"))
+                        //|| eventOccurance.name.ToString().ToLower().Contains("barre"))
                     {
                         continue;
                     }
