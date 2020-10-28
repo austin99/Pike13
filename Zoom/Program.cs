@@ -223,7 +223,11 @@ namespace Pike13Zoom
                     }
 
                     // report a warning, this is generally reserved/reserved
-                    ReportWarning($"Person {Secret.PikeServer}/people/{personId} for event {Secret.PikeServer}/e/{eventId} state is {person.state}/{person.status}"); 
+                    if (person.state == "reserved" && person.status == "reserved")
+                        ReportWarning($"Person {Secret.PikeServer}/people/{personId} for event {Secret.PikeServer}/e/{eventId} state is {person.state}/{person.status}", false); 
+                    else
+                        ReportWarning($"Person {Secret.PikeServer}/people/{personId} for event {Secret.PikeServer}/e/{eventId} state is {person.state}/{person.status}");
+
                     found = true;
                     break;
                 }
@@ -862,7 +866,7 @@ namespace Pike13Zoom
                 {
                     if (person._stale)
                     {
-                        ReportWarning($"Removing stale person {Secret.PikeServer}/people/{person._id} from schedule {Secret.PikeServer}/e/{eventOccurance.id}");
+                        ReportWarning($"Removing stale person {Secret.PikeServer}/people/{person._id} from schedule {Secret.PikeServer}/e/{eventOccurance.id}", false);
                         _db[eventOccurance.id.ToString()].p_people.Remove(person._id);
                     }
                 }
