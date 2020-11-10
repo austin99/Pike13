@@ -197,12 +197,12 @@ namespace Pike13Zoom
             dynamic pikeEvent = JsonConvert.DeserializeObject(response.Content);
             if (pikeEvent.event_occurrences[0].id.ToString() != eventId)
             {
-                ReportWarning("Expected event {eventId}, instead it is {pikeEvent.event_occurrences[0].id.ToString()}");
+                ReportWarning($"Expected event {Secret.PikeServer}/e/{eventId}, instead it is {pikeEvent.event_occurrences[0].id.ToString()}");
                 return false;
             }
             if (pikeEvent.event_occurrences[0].state.ToString() != "active")
             {
-                ReportWarning($"Expected event {eventId} state to be active, instead it is {pikeEvent.event_occurrences[0].state.ToString()}");
+                ReportWarning($"Expected event {Secret.PikeServer}/e/{eventId} state to be active, instead it is {pikeEvent.event_occurrences[0].state.ToString()}");
                 return false;
             }
 
@@ -686,6 +686,7 @@ namespace Pike13Zoom
                     else if (!eventOccurance.name.ToString().EndsWith("(50 mins)") 
                         && !eventOccurance.name.ToString().EndsWith("(55 mins)")
                         && !eventOccurance.name.ToString().StartsWith("Studio Classes")
+                        && eventOccurance.name.ToString() != "Charity Halloween Fancy Dress Dance-tacular - Online"
                         && !eventOccurance.name.ToString().StartsWith("Duet - Online"))
                     {
                         if (!_scheduleWarnMsg.ContainsKey(eventOccurance.id.ToString()))
@@ -781,6 +782,10 @@ namespace Pike13Zoom
                 {
                     zp.p_staff = eventOccurance.staff_members[0].name.ToString();
                     zp.p_staffEmail = zp.p_staff.Split(' ')[0].ToLower() + Secret.EmailSuffix;
+
+                    // special case handling for this email address
+                    if (zp.p_staffEmail.StartsWith("kim"))
+                        zp.p_staffEmail = zp.p_staffEmail.Replace(".com", ".ie");
                 }
 
                 _db.Add(eventOccurance.id.ToString(), zp);
