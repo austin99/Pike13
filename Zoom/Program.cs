@@ -499,9 +499,9 @@ namespace Pike13Zoom
 
                 var response = _client.Execute(request);
                 if (response.ErrorException != null)
-                    throw new ApplicationException($"Error getting Zoom user [{request.Resource}]: {response.ErrorException.Message}");
+                    throw new ApplicationException($"{_zoomUser._user} Error getting Zoom user [{request.Resource}]: {response.ErrorException.Message}");
                 if (response.StatusCode != HttpStatusCode.OK)
-                    throw new ApplicationException($"Error getting Zoom user [{request.Resource}]: {response.StatusCode}");
+                    throw new ApplicationException($"{_zoomUser._user} Error getting Zoom user [{request.Resource}]: {response.StatusCode}");
 
                 dynamic jsonResponse = JsonConvert.DeserializeObject(response.Content);
 
@@ -577,9 +577,9 @@ namespace Pike13Zoom
                     // execute
                     var response = _client.Execute(request);
                     if (response.ErrorException != null)
-                        throw new ApplicationException($"Error getting Zoom schedule [{request.Resource}]: {response.ErrorException.Message}");
+                        throw new ApplicationException($"{_zoomUser._user} Error getting Zoom schedule [{request.Resource}]: {response.ErrorException.Message}");
                     if (response.StatusCode != HttpStatusCode.OK)
-                        throw new ApplicationException($"Error getting Zoom schedule [{request.Resource}]: {response.StatusCode}");
+                        throw new ApplicationException($"{_zoomUser._user} Error getting Zoom schedule [{request.Resource}]: {response.StatusCode}");
 
                     dynamic jsonResponse = JsonConvert.DeserializeObject(response.Content);
 
@@ -685,9 +685,11 @@ namespace Pike13Zoom
                     }
                     else if (!eventOccurance.name.ToString().EndsWith("(50 mins)") 
                         && !eventOccurance.name.ToString().EndsWith("(55 mins)")
+                        && !eventOccurance.name.ToString().EndsWith("(90 mins)")
                         && !eventOccurance.name.ToString().StartsWith("Studio Classes")
                         && eventOccurance.name.ToString() != "Charity Halloween Fancy Dress Dance-tacular - Online"
-                        && !eventOccurance.name.ToString().StartsWith("Duet - Online"))
+                        && !eventOccurance.name.ToString().StartsWith("Duet - Online")
+                        && !eventOccurance.name.ToString().EndsWith("Course - Online"))
                     {
                         if (!_scheduleWarnMsg.ContainsKey(eventOccurance.id.ToString()))
                             _scheduleWarnMsg.Add(eventOccurance.id.ToString(), "");
@@ -702,7 +704,16 @@ namespace Pike13Zoom
                         continue;
                     }
 
+                    // check that the event type (appointment/group) matches the zoom user type
                     if (_zoomUser._type == ZoomUser.EventType.Appointment && !appointment)
+                        continue;
+
+                    // route somatic group classes to Katrin's Somatics Zoom a/c
+                    if (!appointment && eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user != ZoomUser.User.KatrinSoma)
+                        continue;
+
+                    // ensure that only Somatics classes get routed to this a/c
+                    if (!appointment && !eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user == ZoomUser.User.KatrinSoma)
                         continue;
 
                     // get the end time
@@ -784,7 +795,7 @@ namespace Pike13Zoom
                     zp.p_staffEmail = zp.p_staff.Split(' ')[0].ToLower() + Secret.EmailSuffix;
 
                     // special case handling for this email address
-                    if (zp.p_staffEmail.StartsWith("kim"))
+                    if (zp.p_staffEmail.StartsWith("kim") || zp.p_staffEmail.StartsWith("rach"))
                         zp.p_staffEmail = zp.p_staffEmail.Replace(".com", ".ie");
                 }
 
@@ -922,6 +933,8 @@ namespace Pike13Zoom
                             topic = topic.Replace(" (50 mins)", "");
                         if (topic.Contains(" (55 mins)"))
                             topic = topic.Replace(" (55 mins)", "");
+                        if (topic.Contains(" (90 mins)"))
+                            topic = topic.Replace(" (90 mins)", "");
                         if (!string.IsNullOrEmpty(eventOccurance.p_staff))
                             topic += " - " + eventOccurance.p_staff.Split(' ')[0];
 
@@ -944,9 +957,9 @@ namespace Pike13Zoom
 
                         var response = _client.Execute(request);
                         if (response.ErrorException != null)
-                            throw new ApplicationException($"Error creating Zoom meeting [{request.Resource}]: {response.ErrorException.Message}");
+                            throw new ApplicationException($"{_zoomUser._user} Error creating Zoom meeting [{request.Resource}]: {response.ErrorException.Message}");
                         if (response.StatusCode != HttpStatusCode.Created)
-                            throw new ApplicationException($"Error creating Zoom meeting [{request.Resource}]: {response.StatusCode}");
+                            throw new ApplicationException($"{_zoomUser._user} Error creating Zoom meeting [{request.Resource}]: {response.StatusCode}");
 
                         dynamic jsonResponse = JsonConvert.DeserializeObject(response.Content);
 
@@ -975,9 +988,9 @@ namespace Pike13Zoom
 
                 var response = _client.Execute(request);
                 if (response.ErrorException != null)
-                    throw new ApplicationException($"Error deleting Zoom meeting [{request.Resource}]: {response.ErrorException.Message}");
+                    throw new ApplicationException($"{_zoomUser._user} Error deleting Zoom meeting [{request.Resource}]: {response.ErrorException.Message}");
                 if (response.StatusCode != HttpStatusCode.NoContent)
-                    throw new ApplicationException($"Error deleting Zoom meeting [{request.Resource}]: {response.StatusCode}");
+                    throw new ApplicationException($"{_zoomUser._user} Error deleting Zoom meeting [{request.Resource}]: {response.StatusCode}");
 
                 dynamic jsonResponse = JsonConvert.DeserializeObject(response.Content);
 
