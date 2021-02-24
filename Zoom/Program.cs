@@ -259,7 +259,12 @@ namespace Pike13Zoom
             File.AppendAllText(LogFile, DateTime.Now + " -W- " + message + "\r\n");
             if (sendEmail)
             {
-                if (!_lastMessages.ContainsKey(message) || (DateTime.Now - _lastMessages[message]).Hours > 1)
+                // 22/02/2021 07:54:16 -E- Info Error getting Zoom schedule [users/Srxv0suTT46kU4gXOWnzaQ/meetings]: Unauthorized
+                var sendNow = false;
+                if (message.ToLower().Contains("auth"))
+                    sendNow = true;
+
+                if (sendNow || !_lastMessages.ContainsKey(message) || (DateTime.Now - _lastMessages[message]).Hours > 1)
                     SendEmailImpl(Secret.EmailAdmin, Secret.EmailAdmin, null, "Zoom warning", message);
 
                 if (!_lastMessages.ContainsKey(message))
@@ -276,7 +281,12 @@ namespace Pike13Zoom
             File.AppendAllText(LogFile, DateTime.Now + " -E- " + message + "\r\n");
             if (sendEmail)
             {
-                if (!_lastMessages.ContainsKey(message) || (DateTime.Now - _lastMessages[message]).Hours > 1)
+                // 22/02/2021 07:54:16 -E- Info Error getting Zoom schedule [users/Srxv0suTT46kU4gXOWnzaQ/meetings]: Unauthorized
+                var sendNow = false;
+                if (message.ToLower().Contains("auth"))
+                    sendNow = true;
+
+                if (sendNow || !_lastMessages.ContainsKey(message) || (DateTime.Now - _lastMessages[message]).Hours > 1)
                     SendEmailImpl(Secret.EmailAdmin, Secret.EmailAdmin, null, "Zoom error", message);
 
                 if (!_lastMessages.ContainsKey(message))
@@ -708,13 +718,30 @@ namespace Pike13Zoom
                     if (_zoomUser._type == ZoomUser.EventType.Appointment && !appointment)
                         continue;
 
-                    // route somatic group classes to Katrin's Somatics Zoom a/c
-                    if (!appointment && eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user != ZoomUser.User.KatrinSoma)
-                        continue;
+                    // special handling for group classes
+                    if (!appointment)
+                    {
+                        // route somatic group classes to Katrin's Somatics Zoom a/c
+                        if (eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user != ZoomUser.User.KatrinSoma)
+                            continue;
 
-                    // ensure that only Somatics classes get routed to this a/c
-                    if (!appointment && !eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user == ZoomUser.User.KatrinSoma)
-                        continue;
+                        // ensure that only Somatics classes get routed to this a/c
+                        if (!eventOccurance.name.ToString().ToLower().Contains("somatics") && _zoomUser._user == ZoomUser.User.KatrinSoma)
+                            continue;
+
+                        // global pay group classes are handled by Stephs paid a/c
+                        var globalPay = false;
+                        if (eventOccurance.name.ToString().ToLower().Contains("global pay") || eventOccurance.name.ToString().ToLower().Contains("globalpay"))
+                            globalPay = true;
+
+                        // route global pay group classes to Steph's Zoom a/c
+                        if (globalPay && _zoomUser._user != ZoomUser.User.StephGroup)
+                            continue;
+
+                        // ensure that only global pay group classes get routed to this a/c
+                        if (!globalPay && _zoomUser._user == ZoomUser.User.StephGroup)
+                            continue;
+                    }
 
                     // get the end time
                     var end_at = Convert.ToDateTime(eventOccurance.end_at);
