@@ -31,7 +31,7 @@ namespace Pike13Zoom
         const string LogFile = "Pike13Zoom.log";
         const string InStudioEmailFile = "Pike13InStudioEmail.json";
         public const int _zoomMinsStartGroup = 5;
-        public const int _zoomMinsStartAppt = 5;
+        public const int _zoomMinsStartAppt = 0;
 
 
         static void Main(string[] args)
@@ -1077,9 +1077,13 @@ namespace Pike13Zoom
                 note.AppendLine("<br>");
                 note.AppendLine("If you have difficulty with audio on your device, you can dial in for audio only on +353 1 536 9320.<br>");
                 note.AppendLine("<br>");
-                note.AppendLine($"We'll be online {_minsBeforeStart} minutes in advance to help ensure your camera is set up and ready to go for the class starts.<br>");
+                if (_minsBeforeStart > 0)
+                    note.AppendLine($"We'll be online {_minsBeforeStart} minutes in advance to help ensure your camera is set up and ready to go for the class starts.<br>");
+                else
+                    note.AppendLine($"We'll be online and ready to go at your appointment time.<br>");
                 note.AppendLine("<br>");
-                note.AppendLine("Have your mat ready and your camera set up sideways to your mat so we can see you if you do want to use video, you are of course also welcome to not use video and just listen along to our cues.<br>");
+
+                note.AppendLine("Please have your mat ready and your camera set up sideways to your mat so we can see you if you do want to use video, you are of course also welcome to not use video and just listen along to our cues.<br>");
                 note.AppendLine("<br>");
                 note.AppendLine("Here are two links to videos from Zoom, please watch them before class start time if you haven't already.<br>");
                 note.AppendLine("<a href=\"https://www.youtube.com/watch?v=hIkCmbvAHQQ\">www.youtube.com/watch?v=hIkCmbvAHQQ</a><br>");
